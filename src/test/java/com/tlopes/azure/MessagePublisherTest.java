@@ -22,7 +22,7 @@ class MessagePublisherTest {
 
   @Test
   void publishMessage() {
-    Mockito.when(messageClientWrapper.sendMessage()).thenReturn("A mock");
+    Mockito.when(messageClientWrapper.sendMessage()).thenReturn("Returned mocked client wrapper");
 
     messagePublisher.publishMessage();
   }
