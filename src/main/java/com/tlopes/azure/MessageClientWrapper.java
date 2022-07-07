@@ -4,11 +4,14 @@ import com.microsoft.azure.sdk.iot.service.messaging.IotHubServiceClientProtocol
 import com.microsoft.azure.sdk.iot.service.messaging.MessagingClient;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 @ApplicationScoped
-public class MessageClientWrapper {
+public class MessageClientWrapper implements IMessageClientWrapper {
 
   private static final String IOT_HUB_CONN_STRING = "HostName=some-iot-hub.net;SharedAccessKeyName=service;SharedAccessKey=XYZ";
 
@@ -18,7 +21,9 @@ public class MessageClientWrapper {
     this.messagingClient = new MessagingClient(IOT_HUB_CONN_STRING, IotHubServiceClientProtocol.AMQPS);
   }
 
-  void onStart(@Observes StartupEvent ev) {
+  @Override
+  @PostConstruct // Do not use @Observes StartupEvent ev. Any bean (injected or not, alternative or not) can observe and react to an event
+  public void onStart() {
     System.out.println("----------------  Opening real iot hub connection  ----------------");
     try {
       // can use "test".equals(ProfileManager.getActiveProfile()) to avoid opening connecting, but this is messy
@@ -28,11 +33,16 @@ public class MessageClientWrapper {
     }
   }
 
-  void onStop(@Observes ShutdownEvent ev) throws InterruptedException {
+  @Override
+  @PreDestroy
+  public void onStop() throws InterruptedException {
+    System.out.println("----------------  Closing real iot hub connection  ----------------");
     messagingClient.close(50);
   }
 
-  String sendMessage() {
+  @Override
+  public String sendMessage() {
+    System.out.println("----------------  Sending real message  ----------------");
     return "Returned actual client wrapper";
   }
 }

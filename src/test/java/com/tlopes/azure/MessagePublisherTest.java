@@ -17,12 +17,12 @@ class MessagePublisherTest {
    * actual connection to IoT Hub, requiring valid connection string.
    * This is not ideal since anyone may forget to inject the mock and end up messing an iot hub instance.
    */
-  @InjectMock
+  @Inject // Do not use @InjectMock
   MessageClientWrapper messageClientWrapper;
 
   @Test
   void publishMessage() {
-    Mockito.when(messageClientWrapper.sendMessage()).thenReturn("Returned mocked client wrapper");
+    // You don't need that anymore Mockito.when(messageClientWrapper.sendMessage()).thenReturn("Returned mocked client wrapper");
 
     messagePublisher.publishMessage();
   }

@@ -5,9 +5,9 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MessagePublisher {
 
-  private final MessageClientWrapper messageClientWrapper;
+  private final IMessageClientWrapper messageClientWrapper;
 
-  public MessagePublisher(final MessageClientWrapper messageClientWrapper) {
+  public MessagePublisher(final IMessageClientWrapper messageClientWrapper) {
     this.messageClientWrapper = messageClientWrapper;
   }
 
